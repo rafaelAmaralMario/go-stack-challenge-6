@@ -20,13 +20,18 @@ interface FileProps {
 
 const Import: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<FileProps[]>([]);
+  const history = useHistory();
 
   async function handleUpload(): Promise<void> {
+    if (!uploadedFiles.length) {
+      return;
+    }
     const data = new FormData();
     const { file } = uploadedFiles[0];
-    data.append('file', file);
+    data.append('file', file, file.name);
     try {
       await api.post('/transactions/import', data);
+      history.push('/');
     } catch (err) {
       console.log(err.response.error);
     }
